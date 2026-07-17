@@ -160,6 +160,7 @@ tb_logs/
 /data/
 /datasets/*
 !/datasets/README.md
+!/datasets/*.py
 /checkpoints/*
 !/checkpoints/README.md
 /outputs/*
