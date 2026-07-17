@@ -1,0 +1,47 @@
+# Spectrum Generation Engine — API Provider Configuration (OpenRouter)
+#
+# Usage:
+#   python generate.py --provider api --config configs/api_openrouter.yaml
+
+provider:
+  type: api
+  base_url: "https://openrouter.ai/api/v1"
+  api_key: "${OPENROUTER_API_KEY}"
+  model: "qwen/qwen3-0.6b"
+  timeout: 120
+  max_retries: 3
+  retry_delay: 1.0
+  max_concurrent: 8
+
+sampling:
+  temperature: 1.0
+  top_p: 0.95
+  top_k: -1
+  max_tokens: 2048
+  n: 8
+  stop_sequences:
+    - "</answer>"
+    - "<|im_end|>"
+
+scheduler:
+  batch_size: 16
+  max_concurrent: 8
+  checkpoint_interval: 50
+  progress_interval: 10
+
+storage:
+  format: jsonl
+  output_dir: "./outputs"
+  filename_template: "spectra_api_{timestamp}.jsonl"
+  flush_interval: 10
+  checkpoint_dir: "./.checkpoints"
+
+prompts:
+  template_name: reasoning
+  system_prompt: "You are a reasoning assistant. Think step by step."
+  version: v1
+
+logging:
+  level: INFO
+  file: "./logs/api_generation.log"
+  structured: true

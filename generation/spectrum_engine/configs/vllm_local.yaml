@@ -1,0 +1,46 @@
+# Spectrum Generation Engine — vLLM Local Provider Configuration
+#
+# Usage:
+#   python generate.py --provider vllm --config configs/vllm_local.yaml
+
+provider:
+  type: vllm
+  model_path: "Qwen/Qwen3-0.6B"
+  tensor_parallel_size: 1
+  gpu_memory_utilization: 0.9
+  dtype: auto
+  trust_remote_code: false
+  max_model_len: 4096
+
+sampling:
+  temperature: 1.0
+  top_p: 0.95
+  top_k: 50
+  max_tokens: 2048
+  n: 16
+  stop_sequences:
+    - "</answer>"
+    - "<|im_end|>"
+
+scheduler:
+  batch_size: 64
+  max_concurrent: 1
+  checkpoint_interval: 100
+  progress_interval: 25
+
+storage:
+  format: jsonl
+  output_dir: "./outputs"
+  filename_template: "spectra_vllm_{timestamp}.jsonl"
+  flush_interval: 25
+  checkpoint_dir: "./.checkpoints"
+
+prompts:
+  template_name: math
+  system_prompt: "You are a mathematics expert. Show your reasoning step by step."
+  version: v1
+
+logging:
+  level: INFO
+  file: "./logs/vllm_generation.log"
+  structured: true

@@ -1,0 +1,17 @@
+# Spectrum Generation Engine — High-Diversity Sampling Preset
+#
+# Use this preset when maximizing reasoning trajectory diversity.
+# Higher temperatures and larger n values produce broader spectra.
+
+sampling:
+  temperature: 1.2
+  top_p: 0.98
+  top_k: 100
+  min_p: 0.02
+  repetition_penalty: 1.1
+  max_tokens: 4096
+  n: 32
+  stop_sequences:
+    - "</answer>"
+    - "<|im_end|>"
+  seed: null  # No seed for maximum diversity
