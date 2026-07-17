@@ -60,3 +60,33 @@ register_template("math", PromptTemplate(
     user_template="Solve the following problem:\n\n{problem}",
     version="v1"
 ))
+
+
+import os
+from pathlib import Path
+
+def load_persona_prompt(persona_name: str) -> str:
+    """Loads prompt text from prompts/personas/{persona_name}.md."""
+    prompts_dir = Path(__file__).parent
+    path = prompts_dir / "personas" / f"{persona_name}.md"
+    if not path.exists():
+        raise FileNotFoundError(f"Persona file not found at {path}")
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read().strip()
+
+
+def load_style_prompt(style_name: str) -> str:
+    """Loads prompt text from prompts/styles/{style_name}.md."""
+    prompts_dir = Path(__file__).parent
+    path = prompts_dir / "styles" / f"{style_name}.md"
+    if not path.exists():
+        raise FileNotFoundError(f"Style file not found at {path}")
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read().strip()
+
+
+def build_combined_system_prompt(persona_name: str, style_name: str) -> str:
+    """Combines a persona and a formatting style into a single system prompt."""
+    persona_content = load_persona_prompt(persona_name)
+    style_content = load_style_prompt(style_name)
+    return f"{persona_content}\n\nFormat instructions:\n{style_content}"

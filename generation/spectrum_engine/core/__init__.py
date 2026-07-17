@@ -9,6 +9,7 @@ from .types import (
     GenerationReport,
 )
 from .config import EngineConfig
+from .diversity import LexicalDiversityCalculator
 
 __all__ = [
     "PromptRecord",
@@ -18,4 +19,5 @@ __all__ = [
     "ProviderInfo",
     "GenerationReport",
     "EngineConfig",
+    "LexicalDiversityCalculator",
 ]

@@ -1,0 +1,39 @@
+# Spectrum Generation Engine — Experiment Ablation Recipe Configuration
+#
+# Usage:
+#   python generate.py --experiment configs/experiment_ablation.yaml
+
+experiment:
+  name: persona_ablation
+  provider_config_path: api_openrouter.yaml
+  dataset_path: ../../../datasets/math_100.jsonl
+  verifier_type: math
+  
+  recipes:
+    analytical_only:
+      personas:
+        - analytical
+      styles:
+        - standard
+      temperatures:
+        - 0.5
+        - 0.8
+      seeds:
+        - 42
+      samples_per_configuration: 1
+      
+    mixed_recipe_v1:
+      personas:
+        - analytical
+        - competition
+        - teacher
+        - alternative
+      styles:
+        - standard
+      temperatures:
+        - 0.5
+        - 0.8
+        - 1.0
+      seeds:
+        - 42
+      samples_per_configuration: 1

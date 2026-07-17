@@ -90,16 +90,21 @@ def parse_args() -> argparse.Namespace:
         epilog="""Examples:
   python generate.py --provider api --config configs/api_openrouter.yaml --dataset problems.jsonl
   python generate.py --provider vllm --config configs/vllm_local.yaml --dataset math.json
-  python generate.py --provider api --config configs/api_openrouter.yaml --dataset problems.jsonl --resume
+  python generate.py --experiment configs/experiment_ablation.yaml
+  python generate.py --experiment configs/experiment_ablation.yaml --dataset problems_subset.jsonl
 """
     )
     parser.add_argument(
-        "--provider", type=str, required=True, choices=["api", "vllm"],
-        help="Generation provider to use."
+        "--provider", type=str, required=False, choices=["api", "vllm"],
+        help="Generation provider to use (required unless running an experiment)."
     )
     parser.add_argument(
-        "--config", type=str, required=True,
-        help="Path to YAML configuration file."
+        "--config", type=str, required=False,
+        help="Path to YAML configuration file (required unless running an experiment)."
+    )
+    parser.add_argument(
+        "--experiment", type=str, default=None,
+        help="Path to experiment configuration YAML file."
     )
     parser.add_argument(
         "--resume", action="store_true", default=False,
@@ -123,6 +128,71 @@ def parse_args() -> argparse.Namespace:
 async def main() -> None:
     args = parse_args()
     
+    # Check if running an experiment
+    if args.experiment:
+        from generation.spectrum_engine.core.experiment import load_experiment_config, ExperimentRunner
+        
+        # Load experiment config
+        try:
+            exp_config = load_experiment_config(args.experiment)
+        except Exception as e:
+            print(f"Error loading experiment configuration: {e}")
+            sys.exit(1)
+            
+        # Initialize logging using referenced provider config
+        provider_config = load_config(exp_config.provider_config_path)
+        setup_logging(provider_config.logging)
+        
+        logger.info(f"Running Experiment: {exp_config.name}")
+        
+        # Resolve dataset path
+        dataset_path = args.dataset or exp_config.dataset_path
+        if not dataset_path:
+            logger.error("Dataset path must be specified either in the experiment config or via --dataset.")
+            sys.exit(1)
+            
+        # Load prompts
+        try:
+            prompts = load_dataset_prompts(dataset_path, provider_config.prompts.system_prompt)
+            logger.info(f"Loaded {len(prompts)} prompts from dataset: {dataset_path}")
+        except Exception as e:
+            logger.error(f"Failed to load dataset: {e}")
+            sys.exit(1)
+            
+        if args.dry_run:
+            logger.info("Dry run complete — configuration and dataset validated successfully.")
+            logger.info(f"Recipes to run: {list(exp_config.recipes.keys())}")
+            return
+            
+        # Run each recipe
+        runner = ExperimentRunner(exp_config)
+        for recipe_name in exp_config.recipes:
+            logger.info(f"Starting execution of recipe: {recipe_name}")
+            try:
+                recipe_summary = await runner.run_recipe(recipe_name, prompts)
+                logger.info(f"Recipe '{recipe_name}' completed. Summary:")
+                logger.info(f"  Overall Correctness: {recipe_summary.get('overall_trajectory_correctness')}")
+                logger.info(f"  Average Diversity: {recipe_summary.get('average_lexical_diversity')}")
+                
+                # Print leaderboard
+                logger.info("  Persona Leaderboard:")
+                for entry in recipe_summary.get("persona_leaderboard", []):
+                    logger.info(
+                        f"    - {entry['persona']}: Correctness={entry['correctness']} "
+                        f"({entry['correct_count']}/{entry['total_count']}), "
+                        f"Avg Tokens={entry['avg_tokens']}"
+                    )
+            except Exception as e:
+                logger.error(f"Failed to execute recipe '{recipe_name}': {e}", exc_info=True)
+                
+        logger.info("All experiment recipes executed.")
+        return
+
+    # Standard run path
+    if not args.provider or not args.config:
+        print("Error: --provider and --config are required when not running an experiment.")
+        sys.exit(1)
+
     # 1. Load configuration
     config = load_config(args.config)
     
