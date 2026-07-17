@@ -16,6 +16,7 @@ from .composer import PromptComposer
 from .executor import RecipeExecutor
 from .parser import ResponseParser, ParsedResponse
 from .verifier import ResponseVerifier
+from .builder import SpectrumBuilder
 
 __all__ = [
     "PromptRecord",
@@ -36,4 +37,5 @@ __all__ = [
     "ResponseParser",
     "ParsedResponse",
     "ResponseVerifier",
+    "SpectrumBuilder",
 ]

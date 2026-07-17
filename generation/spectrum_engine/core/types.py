@@ -110,6 +110,7 @@ class Spectrum:
     sampling_config: SamplingConfig
     provider_info: ProviderInfo
     created_at: float = field(default_factory=time.time)
+    diversity_statistics: Dict[str, Any] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 
