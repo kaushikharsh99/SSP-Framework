@@ -10,9 +10,10 @@ from .types import (
 )
 from .config import EngineConfig
 from .diversity import LexicalDiversityCalculator
-from .recipe import RecipeConfig, load_recipe
+from .recipe import RecipeConfig, load_recipe, RecipeRegistry
 from .job import GenerationJob, JobPlanner
 from .composer import PromptComposer
+from .executor import RecipeExecutor
 
 __all__ = [
     "PromptRecord",
@@ -25,7 +26,9 @@ __all__ = [
     "LexicalDiversityCalculator",
     "RecipeConfig",
     "load_recipe",
+    "RecipeRegistry",
     "GenerationJob",
     "JobPlanner",
     "PromptComposer",
+    "RecipeExecutor",
 ]

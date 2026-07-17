@@ -1,0 +1,30 @@
+# Baseline analytical reasoning recipe
+recipe:
+  name: math_v1
+  version: 1.0.0
+  description: Baseline analytical math recipe
+  author: Harsh
+  status: experimental
+  tags:
+    - math
+    - baseline
+    - analytical
+  personas:
+    - analytical
+    - teacher
+  strategies:
+    - default
+  styles:
+    - standard
+  query_rewrites:
+    - standard
+    - elegant
+  sampling:
+    temperatures:
+      - 0.5
+      - 0.8
+    top_p:
+      - 0.9
+    seeds:
+      - 42
+    samples_per_configuration: 1
