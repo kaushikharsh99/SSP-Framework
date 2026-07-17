@@ -81,3 +81,23 @@ class VerificationResult:
     is_correct: bool
     error_message: Optional[str] = None
     metrics: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class Spectrum:
+    """Represents a generated spectrum of multiple candidate trajectories for a Prompt.
+    
+    Attributes:
+        prompt: The Prompt object.
+        responses: List of Response objects.
+        generation_config: Dict of generation parameters used.
+        metadata: Dict of custom metadata (model name, run id).
+        diversity_statistics: Dict of calculated diversity metrics.
+        generation_timing: Dict of timing stats (latency, throughput).
+    """
+    prompt: Prompt
+    responses: List[Response]
+    generation_config: Dict[str, Any] = field(default_factory=dict)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    diversity_statistics: Dict[str, Any] = field(default_factory=dict)
+    generation_timing: Dict[str, Any] = field(default_factory=dict)
