@@ -14,6 +14,7 @@ from .recipe import RecipeConfig, load_recipe, RecipeRegistry
 from .job import GenerationJob, JobPlanner
 from .composer import PromptComposer
 from .executor import RecipeExecutor
+from .parser import ResponseParser, ParsedResponse
 
 __all__ = [
     "PromptRecord",
@@ -31,4 +32,6 @@ __all__ = [
     "JobPlanner",
     "PromptComposer",
     "RecipeExecutor",
+    "ResponseParser",
+    "ParsedResponse",
 ]
