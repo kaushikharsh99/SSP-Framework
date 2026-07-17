@@ -41,3 +41,43 @@ class Prompt:
     user_query: str
     formatted_prompt: str
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class Response:
+    """Represents a single candidate generation trajectory from the model.
+    
+    Attributes:
+        id: Unique hash of the generated response.
+        prompt_id: Reference back to the Prompt.id.
+        text: Raw generated output string (thinking + answer).
+        thinking_trace: Substring of step-by-step thinking (e.g. inside <think>).
+        extracted_answer: Substring of final target answer (e.g. inside <answer>).
+        token_ids: List[int] = field(default_factory=list)
+        logprobs: List[float] = field(default_factory=list)
+        metadata: Dict[str, Any] = field(default_factory=dict)
+    """
+    id: str
+    prompt_id: str
+    text: str
+    thinking_trace: str = ""
+    extracted_answer: str = ""
+    token_ids: List[int] = field(default_factory=list)
+    logprobs: List[float] = field(default_factory=list)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class VerificationResult:
+    """Represents the outcome of correctness verification.
+    
+    Attributes:
+        trajectory_id: Reference to the Response.id.
+        is_correct: bool.
+        error_message: Optional compiler error or execution warning.
+        metrics: Dictionary of execution metadata.
+    """
+    trajectory_id: str
+    is_correct: bool
+    error_message: Optional[str] = None
+    metrics: Dict[str, Any] = field(default_factory=dict)
