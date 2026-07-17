@@ -151,15 +151,19 @@ cython_debug/
 wandb/
 .wandb/
 
-# Tensorboard
-logs/
+# Tensorboard & Logs
+/logs/*
+!/logs/README.md
 tb_logs/
 
 # Machine Learning check-pointing / datasets
 /data/
-/datasets/
-/checkpoints/
-/outputs/
+/datasets/*
+!/datasets/README.md
+/checkpoints/*
+!/checkpoints/README.md
+/outputs/*
+!/outputs/README.md
 *.pt
 *.pth
 *.ckpt

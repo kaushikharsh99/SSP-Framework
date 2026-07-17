@@ -1,9 +1,7 @@
 # Experiments
 
-This directory is intended for tracking individual research experiments, notebook analyses, and hyperparameter sweeps.
+Use this directory to run, track, and log specific hyperparameter tuning sweeps or ablation studies.
 
-## Guidelines
-
-- Save local runs under unique identifiers (e.g., `exp_001_ssp_llama_sft`).
-- Do not check model checkpoint weights or large training logs directly into version control.
-- Use subdirectories to organize scripts and configs specific to a single experiment run.
+## Organization
+- Create subfolders for specific experiment runs (e.g., `exp_001_sft_qwen_spectrum`).
+- Keep tracking logs, local tensorboard/wandb run files, and trial configurations inside each subfolder.
