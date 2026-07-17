@@ -26,7 +26,8 @@ class BaseScheduler(ABC):
         prompts: List[PromptRecord],
         provider: BaseProvider,
         storage: BaseStorage,
-        checkpoint: CheckpointManager
+        checkpoint: CheckpointManager,
+        sampling: SamplingConfig
     ) -> GenerationReport:
         """Execute a full generation run.
         
@@ -35,6 +36,7 @@ class BaseScheduler(ABC):
             provider: The generation provider to use.
             storage: The storage backend to write spectra to.
             checkpoint: Checkpoint manager for resume support.
+            sampling: The sampling parameters to pass to the provider.
             
         Returns:
             GenerationReport with summary statistics.

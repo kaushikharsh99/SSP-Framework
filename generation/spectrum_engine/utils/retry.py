@@ -47,15 +47,22 @@ async def retry_async(
                 logger.error(f"All {max_retries} retries exhausted. Last error: {e}")
                 raise
             
-            actual_delay = min(delay, max_delay)
-            if jitter:
-                actual_delay *= (0.5 + random.random())
+            # Inspect exception for custom retry_after attribute (e.g. for rate limits)
+            retry_after = getattr(e, "retry_after", 0.0)
+            if retry_after > 0:
+                actual_delay = retry_after
+            else:
+                actual_delay = min(delay, max_delay)
+                if jitter:
+                    actual_delay *= (0.5 + random.random())
             
             logger.warning(
                 f"Attempt {attempt + 1}/{max_retries + 1} failed: {e}. "
                 f"Retrying in {actual_delay:.1f}s..."
             )
             await asyncio.sleep(actual_delay)
-            delay *= backoff_factor
+            # Only back off exponentially if we are not using a specific retry_after
+            if not retry_after:
+                delay *= backoff_factor
 
     raise last_exception  # Should never reach here
